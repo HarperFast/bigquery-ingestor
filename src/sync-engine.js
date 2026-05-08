@@ -2,7 +2,7 @@
 // File: sync-engine.js
 // Core synchronization engine with modulo-based partitioning
 
-/* global tables */
+import { tables, logger, server, transaction } from 'harper';
 
 import { createHash } from 'crypto';
 import { BigQueryClient } from './bigquery-client.js';

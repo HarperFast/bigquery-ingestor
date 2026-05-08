@@ -7,7 +7,7 @@
 // File: resources.js
 // Component entry point with resource definitions
 
-/* global tables, Resource, server, logger */
+import { tables, Resource, server, logger } from 'harper';
 import { globals } from './globals.js';
 
 // Main data table resource

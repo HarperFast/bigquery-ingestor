@@ -3,7 +3,7 @@
 // Validation service for data integrity checks
 // NOTE: Avoids count-based validation since Harper counts are estimates
 
-/* global server, tables */
+import { server, tables, logger } from 'harper';
 
 import { BigQueryClient } from './bigquery-client.js';
 import { createHash } from 'node:crypto';

@@ -2,6 +2,7 @@
  * Centralized Validation Module
  * Provides validation functions for configuration and data
  */
+import { logger } from 'harper';
 
 /**
  * Validates BigQuery configuration

@@ -1,3 +1,5 @@
+import { logger } from 'harper';
+
 class Globals {
 	constructor() {
 		if (Globals.instance) {
@@ -7,19 +9,15 @@ class Globals {
 		Globals.instance = this;
 	}
 	set(key, value) {
-		if (typeof logger !== 'undefined') {
-			logger.debug(`[Globals.set] Setting '${key}'`);
-		}
+		logger?.debug(`[Globals.set] Setting '${key}'`);
 		this.data[key] = value;
 	}
 	get(key) {
 		const value = this.data[key];
-		if (typeof logger !== 'undefined') {
-			if (value === undefined) {
-				logger.debug(`[Globals.get] Key '${key}' not found`);
-			} else {
-				logger.debug(`[Globals.get] Retrieved '${key}'`);
-			}
+		if (value === undefined) {
+			logger?.debug(`[Globals.get] Key '${key}' not found`);
+		} else {
+			logger?.debug(`[Globals.get] Retrieved '${key}'`);
 		}
 		return value;
 	}

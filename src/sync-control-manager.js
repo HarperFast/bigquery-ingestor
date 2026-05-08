@@ -3,7 +3,7 @@
 // Manages cluster-wide sync control via replicated state table
 // ============================================================================
 
-/* global logger, tables */
+import { logger, tables } from 'harper';
 import { globals } from './globals.js';
 
 export class SyncControlManager {
