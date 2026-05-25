@@ -12,57 +12,57 @@ import { globals } from './globals.js';
 
 // Main data table resource
 export class VesselMetadata extends tables.VesselMetadata {
-	async get(id) {
-		logger.debug(`[VesselMetadata.get] Fetching record with id: ${id}`);
-		const result = await super.get(id);
+	static async get(target, context) {
+		logger.debug(`[VesselMetadata.get] Fetching record with id: ${target}`);
+		const result = await super.get(target, context);
 		logger.debug(`[VesselMetadata.get] Record ${result ? 'found' : 'not found'}`);
 		return result;
 	}
 
-	async search(params) {
+	static async search(params, context) {
 		// This allows us to search on dynamic attributes.
 		params.allowConditionsOnDynamicAttributes = true;
 		logger.debug(`[VesselMetadata.search] Searching with params: ${JSON.stringify(params).substring(0, 200)}`);
-		const results = await super.search(params);
-		logger.info(`[VesselMetadata.search] Search returned ${results.length} records`);
+		const results = await super.search(params, context);
+		logger.info(`[VesselMetadata.search] Search returned ${results?.length} records`);
 		return results;
 	}
 }
 
 // Main data table resource
 export class VesselPositions extends tables.VesselPositions {
-	async get(id) {
-		logger.debug(`[VesselPositions.get] Fetching record with id: ${id}`);
-		const result = await super.get(id);
+	static async get(target, context) {
+		logger.debug(`[VesselPositions.get] Fetching record with id: ${target}`);
+		const result = await super.get(target, context);
 		logger.debug(`[VesselPositions.get] Record ${result ? 'found' : 'not found'}`);
 		return result;
 	}
 
-	async search(params) {
+	static async search(params, context) {
 		// This allows us to search on dynamic attributes.
 		params.allowConditionsOnDynamicAttributes = true;
 		logger.debug(`[VesselPositions.search] Searching with params: ${JSON.stringify(params).substring(0, 200)}`);
-		const results = await super.search(params);
-		logger.info(`[VesselPositions.search] Search returned ${results.length} records`);
+		const results = await super.search(params, context);
+		logger.info(`[VesselPositions.search] Search returned ${results?.length} records`);
 		return results;
 	}
 }
 
 // Main data table resource
 export class PortEvents extends tables.PortEvents {
-	async get(id) {
-		logger.debug(`[PortEvents.get] Fetching record with id: ${id}`);
-		const result = await super.get(id);
+	static async get(target, context) {
+		logger.debug(`[PortEvents.get] Fetching record with id: ${target}`);
+		const result = await super.get(target, context);
 		logger.debug(`[PortEvents.get] Record ${result ? 'found' : 'not found'}`);
 		return result;
 	}
 
-	async search(params) {
+	static async search(params, context) {
 		// This allows us to search on dynamic attributes.
 		params.allowConditionsOnDynamicAttributes = true;
 		logger.debug(`[PortEvents.search] Searching with params: ${JSON.stringify(params).substring(0, 200)}`);
-		const results = await super.search(params);
-		logger.info(`[PortEvents.search] Search returned ${results.length} records`);
+		const results = await super.search(params, context);
+		logger.info(`[PortEvents.search] Search returned ${results?.length} records`);
 		return results;
 	}
 }
@@ -102,7 +102,7 @@ export class SyncAudit extends tables.SyncAudit {
 
 // Control endpoint
 export class SyncControl extends Resource {
-	async get() {
+	static async get(target, context) {
 		logger.debug('[SyncControl.get] Status request received');
 
 		const STATE_ID = 'sync-control';
@@ -144,7 +144,8 @@ export class SyncControl extends Resource {
 		return response;
 	}
 
-	async post({ action }) {
+	static async post(target, data, context) {
+		const { action } = await data;
 		logger.info(`[SyncControl.post] Control action received: ${action}`);
 
 		const STATE_ID = 'sync-control';
