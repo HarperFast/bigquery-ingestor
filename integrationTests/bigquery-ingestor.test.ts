@@ -86,9 +86,10 @@ suite('bigquery-ingestor component (no external BigQuery creds)', (ctx: ContextW
 		assert.equal(body.mmsi, 12345);
 	});
 
-	test('VesselPositions: search override returns seeded records', async () => {
-		// Seed a couple of records.
-		for (const id of ['search-a', 'search-b']) {
+	test('VesselPositions: collection listing routes through the search() override', async () => {
+		// Seed a couple of records under known ids.
+		const seeded = ['search-a', 'search-b'];
+		for (const id of seeded) {
 			const res = await fetch(`${ctx.harper.httpURL}/VesselPositions/${id}`, {
 				method: 'PUT',
 				headers: { 'Authorization': auth(), 'Content-Type': 'application/json' },
@@ -97,42 +98,36 @@ suite('bigquery-ingestor component (no external BigQuery creds)', (ctx: ContextW
 			await res.text();
 		}
 
-		// Query the collection endpoint; routes through the search() override.
-		const res = await fetch(`${ctx.harper.httpURL}/VesselPositions/?mmsi=999`, {
+		// GET the collection root. This routes through the resource's static
+		// search() override (which sets allowConditionsOnDynamicAttributes). We
+		// assert membership rather than filtering on a dynamic, non-indexed
+		// attribute (mmsi is not declared/indexed in the schema, so a server-side
+		// equality filter on it is not guaranteed to be supported).
+		const res = await fetch(`${ctx.harper.httpURL}/VesselPositions/`, {
 			headers: { Authorization: auth(), Accept: 'application/json' },
 		});
 		assert.equal(res.status, 200);
 		const results = (await res.json()) as Array<Record<string, unknown>>;
 		assert.ok(Array.isArray(results), 'search should return an array');
-		const names = results.map((r) => r.vessel_name);
-		assert.ok(names.includes('search-a') && names.includes('search-b'), 'both seeded records should be found');
+		const ids = results.map((r) => r.id);
+		for (const id of seeded) {
+			assert.ok(ids.includes(id), `seeded record ${id} should be listed`);
+		}
 	});
 
-	test('SyncControlState singleton table accepts a control record', async () => {
-		// This is the table the SyncControl REST resource reads/writes; verify the
-		// data layer for it works independently of the sync engine.
-		const id = 'sync-control';
-		const putRes = await fetch(`${ctx.harper.httpURL}/SyncControlState/${id}`, {
-			method: 'PUT',
-			headers: { 'Authorization': auth(), 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				id,
-				command: 'stop',
-				commandedAt: new Date().toISOString(),
-				commandedBy: 'integration-test',
-				version: 1,
-			}),
-		});
-		assert.ok(putRes.status >= 200 && putRes.status < 300, `PUT should succeed, got ${putRes.status}`);
-		await putRes.text();
-
-		const getRes = await fetch(`${ctx.harper.httpURL}/SyncControlState/${id}`, {
+	test('SyncControl custom resource responds over REST without the sync engine', async () => {
+		// SyncControl is the custom Resource exported by src/resources.js. Its GET
+		// handler tolerates an uninitialized controlManager (returns a startup
+		// status) and reads the SyncControlState singleton table directly, so it
+		// works without the BigQuery sync engine running.
+		const res = await fetch(`${ctx.harper.httpURL}/SyncControl/`, {
 			headers: { Authorization: auth(), Accept: 'application/json' },
 		});
-		assert.equal(getRes.status, 200);
-		const body = (await getRes.json()) as Record<string, unknown>;
-		assert.equal(body.command, 'stop');
-		assert.equal(body.version, 1);
+		assert.equal(res.status, 200, 'SyncControl GET should be reachable');
+		const body = (await res.json()) as Record<string, any>;
+		assert.ok(body.worker, 'response should include worker status');
+		assert.ok(body.global, 'response should include global control state');
+		assert.equal(typeof body.uptime, 'number');
 	});
 
 	test('DELETE removes a record from the data layer', async () => {
