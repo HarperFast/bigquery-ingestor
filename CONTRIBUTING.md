@@ -196,10 +196,10 @@ Look for issues labeled `good-first-issue` on GitHub. These are great entry poin
 
 ## Plugin Development
 
-The BigQuery plugin integrates with HarperDB. When modifying plugin code:
+The BigQuery plugin integrates with Harper. When modifying plugin code:
 
-1. Understand HarperDB plugin architecture
-2. Test with a local HarperDB instance
+1. Understand Harper plugin architecture
+2. Test with a local Harper instance
 3. Verify clustering behavior
 4. Check data consistency
 

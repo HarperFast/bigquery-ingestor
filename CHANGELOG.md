@@ -79,10 +79,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Initial release of BigQuery Plugin for HarperDB
+- Initial release of BigQuery Plugin for Harper
 - Modulo-based partitioning for distributed ingestion
 - Adaptive batch sizing based on sync lag
-- Node discovery via HarperDB clustering
+- Node discovery via Harper clustering
 - Independent failure recovery
 - Continuous validation (progress + spot checks)
 - GraphQL API for querying synced data

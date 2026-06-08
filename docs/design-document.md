@@ -936,6 +936,6 @@ Sometimes the best distributed algorithm is no coordination at all.
 
 ## References
 
-- [HarperDB Documentation](https://docs.harperdb.io)
+- [Harper Documentation](https://docs.harperdb.io)
 - [Harper Clustering Documentation](https://docs.harperdb.io/docs/developers/replication)
 - [Harper Fabric](https://fabric.harper.fast)

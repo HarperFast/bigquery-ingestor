@@ -528,4 +528,4 @@ This enables true autoscaling but isn't critical yet—quarterly capacity planni
 - [Project History](HISTORY.md) — Development milestones
 - [System Overview](system-overview.md) — Architecture and how it all works together
 - [GitHub Repository](https://github.com/HarperFast/bigquery-ingestor) — Complete implementation
-- [HarperDB Docs](https://docs.harperdb.io) — Platform documentation
+- [Harper Docs](https://docs.harperdb.io) — Platform documentation

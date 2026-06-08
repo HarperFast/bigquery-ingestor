@@ -4,7 +4,7 @@
 	"description": "BigQuery data ingestion plugin for Harper",
 	"license": "Apache-2.0",
 	"author": {
-		"name": "HarperDB, Inc.",
+		"name": "Harper, Inc.",
 		"email": "opensource@harperdb.io",
 		"url": "https://harper.fast/"
 	},
@@ -34,6 +34,7 @@
 	],
 	"scripts": {
 		"test": "node --test test/config-loader.test.js test/sync-engine.test.js test/bigquery-client.test.js test/generator.test.js test/multi-table-orchestrator.test.js",
+		"test:integration": "harper-integration-test-run integrationTests/**/*.test.ts",
 		"test:coverage": "node --test --experimental-test-coverage test/config-loader.test.js test/sync-engine.test.js test/bigquery-client.test.js test/generator.test.js test/multi-table-orchestrator.test.js",
 		"test:config": "node examples/test-bigquery-config.js",
 		"lint": "eslint .",
@@ -49,9 +50,11 @@
 	},
 	"devDependencies": {
 		"@harperdb/code-guidelines": "^0.0.5",
+		"@harperfast/integration-testing": "^0.4.0",
 		"eslint": "^9.35.0",
 		"husky": "^9.1.7",
-		"prettier": "^3.6.2"
+		"prettier": "^3.6.2",
+		"typescript": "^5.9.3"
 	},
 	"engines": {
 		"node": ">=20"
