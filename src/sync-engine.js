@@ -362,7 +362,7 @@ export class SyncEngine {
 				logger.trace(`[SyncEngine.ingestRecords] Converted record: ${JSON.stringify(convertedRecord)}`);
 
 				// Validate timestamp exists
-				if (!convertedRecord[timestampColumn]) {
+				if (convertedRecord[timestampColumn] == null) {
 					logger.warn(
 						`[SyncEngine.ingestRecords] Missing timestamp column '${timestampColumn}', skipping record: ${JSON.stringify(convertedRecord).substring(0, 100)}`
 					);
@@ -413,23 +413,16 @@ export class SyncEngine {
 			);
 
 			let _lastResult;
-			transaction((_txn) => {
-				try {
-					// Dynamic table access for multi-table support
-					const targetTableObj = tables[this.targetTable];
-					if (!targetTableObj) {
-						throw new Error(`Target table '${this.targetTable}' not found in schema`);
-					}
+			await transaction((_txn) => {
+				// Dynamic table access for multi-table support
+				const targetTableObj = tables[this.targetTable];
+				if (!targetTableObj) {
+					throw new Error(`Target table '${this.targetTable}' not found in schema`);
+				}
 
-					for (const rec of validRecords) {
-						// Use put (upsert) instead of create to handle duplicate IDs gracefully
-						_lastResult = targetTableObj.put(rec);
-					}
-				} catch (error) {
-					logger.error(`[SyncEngine.ingestRecords] Harper put failed: ${error.message}`, error);
-					if (error.errors) {
-						error.errors.forEach((e) => logger.error(`  ${e.reason} at ${e.location}: ${e.message}`));
-					}
+				for (const rec of validRecords) {
+					// Use put (upsert) instead of create to handle duplicate IDs gracefully
+					_lastResult = targetTableObj.put(rec);
 				}
 			});
 			logger.info(`[SyncEngine.ingestRecords] Successfully wrote ${validRecords.length} records`);

@@ -69,14 +69,14 @@ export class PortEvents extends tables.PortEvents {
 
 // Checkpoint resource
 export class SyncCheckpoint extends tables.SyncCheckpoint {
-	async getForNode(nodeId) {
+	static async getForNode(nodeId) {
 		logger.debug(`[SyncCheckpoint.getForNode] Fetching checkpoint for nodeId: ${nodeId}`);
 		const checkpoint = await super.get(nodeId);
 		logger.debug(`[SyncCheckpoint.getForNode] Checkpoint ${checkpoint ? 'found' : 'not found'}`);
 		return checkpoint;
 	}
 
-	async updateCheckpoint(nodeId, data) {
+	static async updateCheckpoint(nodeId, data) {
 		logger.info(`[SyncCheckpoint.updateCheckpoint] Updating checkpoint for nodeId: ${nodeId}`);
 		logger.debug(`[SyncCheckpoint.updateCheckpoint] Data: ${JSON.stringify(data).substring(0, 200)}`);
 		const result = await super.put({ nodeId, ...data });
@@ -87,7 +87,7 @@ export class SyncCheckpoint extends tables.SyncCheckpoint {
 
 // Audit resource
 export class SyncAudit extends tables.SyncAudit {
-	async getRecent(hours = 24) {
+	static async getRecent(hours = 24) {
 		logger.debug(`[SyncAudit.getRecent] Fetching audit records from last ${hours} hours`);
 		const cutoff = new Date(Date.now() - hours * 3600000).toISOString();
 		logger.debug(`[SyncAudit.getRecent] Cutoff timestamp: ${cutoff}`);
@@ -163,18 +163,35 @@ export class SyncControl extends Resource {
 			);
 		}
 
-		// Get current version
-		const current = await tables.SyncControlState.get(STATE_ID);
-		const nextVersion = (current?.version || 0) + 1;
+		// Atomically increment version using a conditional-put retry loop to prevent
+		// concurrent POSTs from computing the same nextVersion (TOCTOU race).
+		let nextVersion;
+		const MAX_RETRIES = 5;
+		for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+			const current = await tables.SyncControlState.get(STATE_ID);
+			const expectedVersion = current?.version || 0;
+			nextVersion = expectedVersion + 1;
 
-		// Update state table (triggers all subscriptions cluster-wide)
-		await tables.SyncControlState.put({
-			id: STATE_ID,
-			command: action,
-			commandedAt: new Date().toISOString(),
-			commandedBy: `${server.hostname}-${server.workerIndex}`,
-			version: nextVersion,
-		});
+			try {
+				await tables.SyncControlState.put(
+					{
+						id: STATE_ID,
+						command: action,
+						commandedAt: new Date().toISOString(),
+						commandedBy: `${server.hostname}-${server.workerIndex}`,
+						version: nextVersion,
+					},
+					{ ifVersion: expectedVersion }
+				);
+				break; // Write succeeded — exit retry loop
+			} catch (err) {
+				if (attempt < MAX_RETRIES - 1 && err?.code === 'VERSION_CONFLICT') {
+					logger.warn(`[SyncControl.post] Version conflict on attempt ${attempt + 1}, retrying`);
+					continue;
+				}
+				throw err;
+			}
+		}
 
 		logger.info(`[SyncControl.post] Command '${action}' issued (v${nextVersion})`);
 
