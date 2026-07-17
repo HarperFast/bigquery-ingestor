@@ -1,3 +1,12 @@
+> [!IMPORTANT]
+> **This repository is archived and read-only.**
+>
+> It's a point-in-time snapshot built to accompany [BigQuery to Harper: Real-Time Data Access Without Redis or Custom APIs](https://www.harper.fast/resources/bigquery-to-harper-real-time-data-access-without-redis-or-custom-apis).
+> It is pinned to **HarperDB v4** and is preserved for reference.
+> It is **not** kept in sync with current releases and may not be supported in latest Harper versions.
+>
+> For up-to-date guides and reference docs, see the [Harper docs](https://docs.harperdb.io).
+
 # BigQuery Sync Plugin for Harper
 
 **Production-ready distributed data ingestion from Google BigQuery to Harper.**
