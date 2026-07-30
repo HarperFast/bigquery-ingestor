@@ -5,7 +5,7 @@
 > It is pinned to **HarperDB v4** and is preserved for reference.
 > It is **not** kept in sync with current releases and may not be supported in latest Harper versions.
 >
-> For up-to-date guides and reference docs, see the [Harper docs](https://docs.harperdb.io).
+> For up-to-date guides and reference docs, see the [Harper docs](https://docs.harper.fast) and join our [Discord](https://harper.fast/discord).
 
 # BigQuery Sync Plugin for Harper
 
