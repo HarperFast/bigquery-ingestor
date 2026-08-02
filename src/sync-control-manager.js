@@ -3,7 +3,7 @@
 // Manages cluster-wide sync control via replicated state table
 // ============================================================================
 
-/* global logger, tables */
+import { logger, tables } from 'harper';
 import { globals } from './globals.js';
 
 export class SyncControlManager {
@@ -47,7 +47,9 @@ export class SyncControlManager {
 		// Subscribe to future changes
 		logger.info('[SyncControlManager.initialize] Setting up subscription');
 		this.subscription = await tables.SyncControlState.subscribe({ id: STATE_ID });
-		this.startSubscriptionLoop();
+		this.startSubscriptionLoop().catch((err) =>
+			logger.error('[SyncControlManager] startSubscriptionLoop rejected unexpectedly', err)
+		);
 
 		logger.info('[SyncControlManager.initialize] Initialization complete');
 	}

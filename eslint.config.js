@@ -4,7 +4,17 @@ export default [
 	...harperConfig,
 	// Custom configuration for BigQuery sync plugin
 	{
-		ignores: ['dist/', 'node_modules/', 'coverage/', 'tools/maritime-data-synthesizer/**', 'examples/**'],
+		ignores: [
+			'dist/',
+			'node_modules/',
+			'coverage/',
+			'tools/maritime-data-synthesizer/**',
+			'examples/**',
+			// integrationTests/ holds TypeScript suites run via the Harper test
+			// harness plus a fixture component that is a copy of src/ — not part of
+			// the linted application source.
+			'integrationTests/**',
+		],
 	},
 	{
 		rules: {

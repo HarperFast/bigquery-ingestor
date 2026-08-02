@@ -1,0 +1,17 @@
+# Integration-test fixture config for the BigQuery ingestor component.
+#
+# This fixture intentionally OMITS the `pluginModule` (./src/index.js) that the
+# production config.yaml loads. The plugin's handleApplication() constructs a
+# BigQueryClient and initializes SyncEngines, which requires real Google
+# BigQuery credentials and network access that are unavailable in CI. By leaving
+# pluginModule out, Harper still loads the GraphQL schema (tables) and the REST +
+# jsResource layer, so we can exercise the data/REST layer against locally-seeded
+# data without touching BigQuery.
+
+rest: true
+
+graphqlSchema:
+  files: 'schema/bigquery-ingestor.graphql'
+
+jsResource:
+  files: 'src/resources.js'

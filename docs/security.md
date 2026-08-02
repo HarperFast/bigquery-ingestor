@@ -110,9 +110,9 @@ echo ".env.*.local" >> .gitignore
 4. **Implement column-level security** if needed
 5. **Monitor query costs** to detect abuse
 
-### HarperDB Security
+### Harper Security
 
-1. **Enable authentication** on HarperDB instances
+1. **Enable authentication** on Harper instances
 2. **Use TLS** for clustering communication
 3. **Restrict network access** to trusted IPs
 4. **Regular security updates**
@@ -157,7 +157,7 @@ echo ".env.*.local" >> .gitignore
 
 **Mitigation**:
 
-- Use HarperDB authentication
+- Use Harper authentication
 - TLS for inter-node communication
 - Network isolation where possible
 - Monitor for anomalies
@@ -245,7 +245,7 @@ This project aims to follow:
 ## Security Resources
 
 - [Google Cloud Security Best Practices](https://cloud.google.com/security/best-practices)
-- [HarperDB Security Documentation](https://docs.harperdb.io/docs/security)
+- [Harper Security Documentation](https://docs.harperdb.io/docs/security)
 - [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/)
 - [Node.js Security Best Practices](https://nodejs.org/en/docs/guides/security/)
 

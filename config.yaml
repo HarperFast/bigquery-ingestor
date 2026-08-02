@@ -213,6 +213,7 @@ retry:
   backoffMultiplier: 2
   initialDelay: 1000 # milliseconds
 
+
 # ============================================================================
 # LEGACY SINGLE-TABLE FORMAT (still supported for backward compatibility)
 # ============================================================================

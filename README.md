@@ -370,7 +370,7 @@ curl -X POST http://localhost:9926/SyncControl \
 }
 ```
 
-- **global**: Cluster-wide sync command state (replicated across all nodes via HarperDB)
+- **global**: Cluster-wide sync command state (replicated across all nodes via Harper)
 - **worker**: This specific worker thread's status
 - **nodeId**: Identifies worker as `hostname-workerIndex`
 - **tables**: Status per sync engine (one per configured table)

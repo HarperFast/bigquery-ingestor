@@ -1,0 +1,60 @@
+# File: bigquery-ingestor.graphql
+# GraphQL schema definitions for tables
+
+# Example tables - dynamic schema allows BigQuery fields to be added automatically
+type VesselPositions @table {
+	id: ID @primaryKey
+}
+
+type PortEvents @table {
+	id: ID @primaryKey
+}
+
+type VesselMetadata @table {
+	id: ID @primaryKey
+}
+
+# Checkpoint table for ingestion
+# Supports multi-table sync with composite checkpoint IDs
+type SyncCheckpoint @table {
+	checkpointId: String! @primaryKey # Format: "{tableId}_{nodeId}" for multi-table, "{nodeId}" for single table
+	tableId: String! # Table identifier (e.g., "vessel_positions", "port_events")
+	nodeId: Int! # Node ID within cluster
+	lastTimestamp: String! # ISO 8601 string - matches BigQuery TIMESTAMP() parameter format
+	recordsIngested: Long!
+	lastSyncTime: String! # ISO 8601 string
+	phase: String!
+	batchSize: Int!
+}
+
+# Audit table for ingestion
+type SyncAudit @table {
+	id: ID! @primaryKey
+	timestamp: Date! @indexed @createdTime
+	nodeId: Int
+	bigQueryCount: Long
+	harperCount: Long
+	delta: Long
+	status: String!
+	reason: String
+	recordSample: String
+}
+
+# Cluster-wide sync control state
+# Single record coordinates all workers across all nodes
+type SyncControlState @table {
+	id: String! @primaryKey # Always "sync-control" (singleton)
+	command: String! # "start" | "stop" | "validate"
+	commandedAt: Date! @indexed # When command was issued
+	commandedBy: String # Node that issued (hostname-workerIndex)
+	version: Int! # Monotonically increasing for ordering
+}
+
+# Schema lock table for distributed schema checking
+# Ensures only one node checks schemas at a time
+type SchemaLock @table {
+	lockId: String! @primaryKey # Always "schema_check"
+	nodeId: String! # Which node holds the lock (hostname-pid)
+	acquiredAt: Date! # When lock was acquired
+	expiresAt: Date! @indexed # TTL for automatic release (10 minutes)
+}

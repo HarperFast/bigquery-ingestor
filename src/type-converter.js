@@ -2,6 +2,7 @@
  * Type Converter
  * Converts BigQuery-specific types to JavaScript primitives and Date objects
  */
+import { logger } from 'harper';
 
 /**
  * Checks if a value is a BigQuery timestamp type

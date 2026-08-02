@@ -2,15 +2,15 @@
 
 This project contains two complementary components that work together:
 
-## 1. BigQuery Ingestor Plugin (for HarperDB)
+## 1. BigQuery Ingestor Plugin (for Harper)
 
-**Purpose**: Syncs data FROM BigQuery INTO HarperDB
+**Purpose**: Syncs data FROM BigQuery INTO Harper
 
 **What it does**:
 
 - Connects to BigQuery and monitors a source table
 - Fetches new/updated records based on timestamp
-- Ingests data into HarperDB with validation
+- Ingests data into Harper with validation
 - Handles different sync modes (initial, catchup, steady-state)
 - Provides GraphQL API for querying synced data
 
@@ -94,7 +94,7 @@ This keeps setup simple - configure once, use everywhere!
 │  - Monitors for new data    │   │  - Generates vessel data   │
 │  - Fetches incrementally    │   │  - Simulates movement      │
 │  - Validates records        │   │  - Manages retention       │
-│  - Ingests to HarperDB      │   │  - Auto-cleanup            │
+│  - Ingests to Harper      │   │  - Auto-cleanup            │
 │                             │   │                            │
 │  GraphQL API ──────────────▶│   │  CLI Tool                  │
 └─────────────┬───────────────┘   └────────────────────────────┘
@@ -102,7 +102,7 @@ This keeps setup simple - configure once, use everywhere!
               │ Stores
               ▼
 ┌─────────────────────────────┐
-│        HarperDB             │
+│        Harper             │
 │                             │
 │  - Local database           │
 │  - Fast queries             │
@@ -142,7 +142,7 @@ bigquery:
 
 ### 3. Run Plugin
 
-Start HarperDB with the plugin, and it will:
+Start Harper with the plugin, and it will:
 
 - Sync vessel positions from BigQuery
 - Make them queryable via GraphQL
@@ -300,8 +300,8 @@ npx maritime-data-synthesizer reset 30
 ### Plugin
 
 ```bash
-# Runs as HarperDB plugin
-# See HarperDB documentation for setup
+# Runs as Harper plugin
+# See Harper documentation for setup
 ```
 
 ## Next Steps
@@ -313,7 +313,7 @@ npx maritime-data-synthesizer reset 30
 
 ## Support
 
-- Plugin issues: See HarperDB documentation
+- Plugin issues: See Harper documentation
 - Synthesizer issues: Check `docs/maritime-data-synthesizer.md`
 - Configuration: All settings documented in `config.yaml`
 
